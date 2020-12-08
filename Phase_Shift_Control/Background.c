@@ -121,10 +121,12 @@ void backgroundfa4(void)
 }
 
 //40ms background function 1
-//Transmit Saved Values and Flags for Display
+
 void backgroundfb1(void)
 {
+    //Transmit Saved Values and Flags for Display
     SCI_HANDLE_FUN(PCP_P_handle);
+    SM_FUN(PCP_P_handle);
 }
 
 //40ms background function 2
@@ -145,11 +147,12 @@ void backgroundfb3(void)
 
 void backgroundfb4(void)
 {
+    //NotifyLight
     if (BeatCount >= (10 + 2 - PCP_P_handle->PCP_DATAEXCHANGE_OBJ_P_INS->T_dis_data/10))
     {
         BeatCount = 0;
         PCP_P_handle->IO_PACK_OBJ_P_INS->Twinkle_p->portdata   = (1 - PCP_P_handle->IO_PACK_OBJ_P_INS->Twinkle_p->portdata);
-//        PCP_P_handle->IO_PACK_OBJ_P_INS->OOUT2_p->portdata   = (1 - PCP_P_handle->IO_PACK_OBJ_P_INS->OOUT2_p->portdata);
+    //        PCP_P_handle->IO_PACK_OBJ_P_INS->OOUT2_p->portdata   = (1 - PCP_P_handle->IO_PACK_OBJ_P_INS->OOUT2_p->portdata);
     }
     else
     {
@@ -159,10 +162,15 @@ void backgroundfb4(void)
 //400ms background function 1
 void backgroundfc1(void)
 {
+    //PI update function
     PI_Update(PCP_P_handle);
+    //Reference current update function
     Iref_Update(PCP_P_handle);
+    //Pulse Parameters(Duty/Frequency/)
     Pulse_Update(PCP_P_handle);
+    //Software protection threshold update(Iin/Io/Vin/Vo)
     Soft_Prt_Update(PCP_P_handle);
+    //Software protection threshold update(T)
     Soft_LSpd_Prt_Update(PCP_P_handle);
 }
 

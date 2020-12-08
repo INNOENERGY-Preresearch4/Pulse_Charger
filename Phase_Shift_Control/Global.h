@@ -237,6 +237,8 @@ extern PCP_Driver_OBJ_p PCP_P_handle;
 extern int MEP_ScaleFactor;
 extern Uint16 SFO_status;
 
+extern Uint16 SM_StartupMSG_Flg;
+extern Uint16 SM_ShutdownMSG_Flg;
 
 extern Uint16 scitest;
 
@@ -260,6 +262,7 @@ extern void IO_CFG(PCP_Driver_OBJ_p OBJ);
 extern void SCI_CFG(PCP_Driver_OBJ_p OBJ,Uint16 port,Uint32 lspclk,Uint32 baudrate);
 extern void IO_HANDLE_FUN(PCP_Driver_OBJ_p OBJ);
 extern void SCI_HANDLE_FUN(PCP_Driver_OBJ_p OBJ);
+extern void SM_FUN(PCP_Driver_OBJ_p OBJ);
 extern void PULSE_GEN_CFG(PCP_Driver_OBJ_p OBJ,Uint16 clkdiv,Uint16 hclkdiv,Uint16 pulseclk, float32 pulseduty, float32 triggertime,Uint16 pwmno);
 extern void CLA_CL_ENA(PCP_Driver_OBJ_p OBJ);
 extern void CLA_CL_DIS(PCP_Driver_OBJ_p OBJ);

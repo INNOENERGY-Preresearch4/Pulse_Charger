@@ -4,11 +4,8 @@
 #include "background.h"
 #include "Cla_Interrupts.h"
 
-Uint16 PWM_Startup_Flg = 0;
-Uint16 PWM_Startup_Cnt = 0;
-Uint16 PWM_Startup_End_Flg = 0;
-Uint16 PWM_End_Flg = 0;
-Uint16 PWM_End_Cnt = 0;
+Uint16 SM_StartupMSG_Flg = 0;
+Uint16 SM_ShutdownMSG_Flg = 0;
 
 void SCI_HANDLE_FUN(PCP_Driver_OBJ_p OBJ)
 {
@@ -23,17 +20,7 @@ void SCI_HANDLE_FUN(PCP_Driver_OBJ_p OBJ)
                     + target->SCI_DRV_OBJ_P_INS->rxbuf[1] + target->SCI_DRV_OBJ_P_INS->rxbuf[2] + target->SCI_DRV_OBJ_P_INS->rxbuf[3] \
                     + target->SCI_DRV_OBJ_P_INS->rxbuf[4] + target->SCI_DRV_OBJ_P_INS->rxbuf[5] + target->SCI_DRV_OBJ_P_INS->rxbuf[6]))
             {
-                //target->IO_PACK_OBJ_P_INS->PWM_en_p->portdata = 1;
-                if (PWM_Startup_Flg == 0)
-                {
-                    PWM_End_Flg = 0;
-                    PWM_Startup_Cnt = 0;
-                    PWM_Startup_Flg = 1;
-                    PWM_Startup_End_Flg = 0;
-                    PWM_End_Cnt = 0;
-                }
-
-                target->IO_PACK_OBJ_P_INS->Relay_out_p->portdata = 1;
+                SM_StartupMSG_Flg = 1;
                 target->SCI_DRV_OBJ_P_INS->txbuf[0]=123;
                 target->SCI_DRV_OBJ_P_INS->txnum = 1;
                 target->PCP_DATAEXCHANGE_OBJ_P_INS->Io_ref_data = target->SCI_DRV_OBJ_P_INS->rxbuf[1]*256 + target->SCI_DRV_OBJ_P_INS->rxbuf[2];
@@ -83,17 +70,7 @@ void SCI_HANDLE_FUN(PCP_Driver_OBJ_p OBJ)
         case 83:
             if((target->SCI_DRV_OBJ_P_INS->rxbuf[1] * 256 + target->SCI_DRV_OBJ_P_INS->rxbuf[2])==(target->SCI_DRV_OBJ_P_INS->rxbuf[0]))
             {
-                PWM_Startup_Cnt = 0;
-                PWM_Startup_Flg = 0;
-                PWM_Startup_End_Flg = 0;
-                PWM_End_Flg = 1;
-
-                EALLOW;
-//                    GpioCtrlRegs.GPACSEL4.bit.GPIO24   = 0x0;
-//                    EPwm2Regs.TZFRC.bit.OST = 1;
-//                    EPwm1Regs.TZFRC.bit.OST = 1;
-//                    target->IO_PACK_OBJ_P_INS->PWM_en_p->portdata    = 0;
-                EDIS;
+                SM_ShutdownMSG_Flg = 1;
                 target->PCP_DATAEXCHANGE_OBJ_P_INS->Io_ref_data  = 0;
                 target->PCP_DATAEXCHANGE_OBJ_P_INS->Vo_ref_data  = 0;
                 target->PCP_DATAEXCHANGE_OBJ_P_INS->fre_set_data = 0;
@@ -136,61 +113,5 @@ void SCI_HANDLE_FUN(PCP_Driver_OBJ_p OBJ)
             target->SCI_DRV_OBJ_P_INS->txbuf[clcnum] = 0;
         }
     }
-    //PWM enable Delay
-    if (PWM_Startup_Flg == 1)
-    {
-        if(PWM_Startup_Cnt == 2)
-        {
-            EALLOW;
-            EPwm2Regs.TZCLR.bit.OST = 1;
-            EPwm1Regs.TZCLR.bit.OST = 1;
-            EDIS;
-            PWM_Startup_Cnt += 1;
-        }
-        else if(PWM_Startup_Cnt == 10)
-        {
-            EALLOW;
-            Cla1Regs.MIER.bit.INT1 = 1;
-            Cla1Regs.MIER.bit.INT2 = 1;
-            EDIS;
-            target->IO_PACK_OBJ_P_INS->PWM_en_p->portdata = 1;
-            GpioDataRegs.GPASET.bit.GPIO24 = 1;
-            PWM_Startup_End_Flg = 1;
-            PWM_Startup_Cnt += 1;
-        }
-        else if(PWM_Startup_Cnt < 10)//10*10ms
-        {
-            PWM_Startup_Cnt += 1;
-        }
-        else
-        {
-            ;
-        }
-    }
-        //PWM disable Delay
-    if (PWM_End_Flg == 1)
-    {
-        if(PWM_End_Cnt == 0)//10*10ms
-        {
-            EALLOW;
-            Cla1Regs.MIER.bit.INT1 = 0;
-            Cla1Regs.MIER.bit.INT2 = 0;
-            EPwm2Regs.TZFRC.bit.OST = 1;
-            EPwm1Regs.TZFRC.bit.OST = 1;
-            EDIS;
-            PWM_End_Cnt += 1;
-        }
-        else if(PWM_End_Cnt == 3)
-        {
-            target->IO_PACK_OBJ_P_INS->PWM_en_p->portdata = 0;
-            EALLOW;
-            Cla1Regs.MIFRC.bit.INT7 = 1;
-            EDIS;
-            PWM_End_Cnt += 1;
-        }
-        else if(PWM_End_Cnt < 10)//10*10ms
-        {
-            PWM_End_Cnt += 1;
-        }
-    }
+
 }

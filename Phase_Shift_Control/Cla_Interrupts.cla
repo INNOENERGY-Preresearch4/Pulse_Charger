@@ -14,26 +14,27 @@ float io_raw;
 float PartP;
 float PartI;
 
+//Triggered by driver signal, frequency:1/fs
 __attribute__((interrupt)) void claTask1(void)
 {
+    //Filtering, Bandwidth:
         Cla_Avg_Run(&EVAG_N1);
-
-        if(EPwm4Regs.CMPB.bit.CMPB  > EPwm4Regs.TBCTR &&(!Prt_flag))//pulse output
+    //Pulse Generation through TripZone force/clear
+        //Disable PWM (without protection)
+        if(EPwm4Regs.CMPB.bit.CMPB  > EPwm4Regs.TBCTR &&(!Prt_flag))
         {
             __meallow();
             EPwm2Regs.TZFRC.bit.OST = 1;
             EPwm1Regs.TZFRC.bit.OST = 1;
             __medis();
         }
+        //Enable PWM (without protection)
         else if(!Prt_flag)
         {
             __meallow();
             EPwm2Regs.TZCLR.bit.OST = 1;
             EPwm1Regs.TZCLR.bit.OST = 1;
             __medis();
-//            io_raw = 21.4634f*AdcaResultRegs.ADCRESULT3;
-//            EVAG_N1.out     = (io_raw - EVAG_N1.out)*EVAG_N1.mult + EVAG_N1.out*(1.0f-EVAG_N1.mult);
-//            AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;
         }
 
         else
@@ -42,15 +43,19 @@ __attribute__((interrupt)) void claTask1(void)
         }
 
 }
+
+//Triggered by Pulse signal, frequency:1/f_pulse
 __attribute__((interrupt)) void claTask2(void)
 {
     //PI Tustin Discretization: y = (Kp + Ki/s)*u = (Kp + Ki*T/2*(1+Z^-1)/(1-Z^-1))*u
     io    = EVAG_N1.out;
+
+    //Discretized PI controller
     PartP = Kp*(iref-io*0.0004577f) - Kp*(iref_last-io_last*0.0004577f);
     PartI = Ki*Tpulse/2.0*(iref-io*0.0004577f) + Ki*Tpulse/2.0*(iref_last-io_last*0.0004577f);
-
     phase_shift_raw = PartP + PartI + phase_shift_last;
-
+    //Without Anti-windup currently
+    //Saturation
     if (phase_shift_raw < CnlVar_N1.umin)
     {
         phase_shift = CnlVar_N1.umin;
@@ -63,13 +68,14 @@ __attribute__((interrupt)) void claTask2(void)
     {
         phase_shift = phase_shift_raw;
     }
-
+    //phase shift update
     phase_shift_int =  (Uint16)(phase_shift*256*(McuClk/Fs/1000));
 
     EPwm2Regs.TBPHS.bit.TBPHS = phase_shift_int >> 8;
     EPwm2Regs.TBPHS.bit.TBPHSHR =  (Uint16)((0xFF - ((Uint16)phase_shift_int >> 8)) << 8);
+    //Interupt clr.
     EPwm4Regs.ETCLR.bit.INT = 1;
-
+    //save variables
     phase_shift_last = phase_shift;
     iref_last = iref;
     io_last = io;
@@ -90,13 +96,14 @@ __attribute__((interrupt)) void claTask6(void)
 {
 
 }
+//Triggered by SW force
 __attribute__((interrupt)) void claTask7(void)
 {
 
+    //Init variables
     EVAG_N1.mult = 0.003f;
     EVAG_N1.mult2 = 1.0f - EVAG_N1.mult;
     EVAG_N1.out  = 0.0f;
-    //PI Tustin Discretization: y = (Kp + Ki/s)*u = (Kp + Ki*T/2*(1+Z^-1)/(1-Z^-1))*u
 
     CnlVar_N1.a1 = 1.0f;
     CnlVar_N1.ek1 = 0.0f;

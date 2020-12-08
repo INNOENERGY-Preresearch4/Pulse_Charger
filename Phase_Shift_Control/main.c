@@ -59,8 +59,6 @@ float Tpulse;
 #pragma DATA_SECTION(Prt_flag,"CpuToCla1MsgRAM");
 bool Prt_flag;
 
-
-
 void main(void)
 {
     InitSysCtrl();

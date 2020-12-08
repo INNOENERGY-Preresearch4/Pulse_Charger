@@ -237,4 +237,9 @@
 #define T_Launch            30
 #define T_Prt_Min           80
 #define T_Prt_Max           120
+
+#define Startup_Wait_time1    2
+#define Startup_Wait_time2    10
+#define Shutdown_Wait_time1    0
+#define Shutdown_Wait_time2    3
 #endif

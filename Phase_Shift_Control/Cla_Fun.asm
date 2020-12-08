@@ -2,24 +2,26 @@
 		.cdecls   C,LIST,"CLAShared.h"
 
 		.if __TI_EABI__
-		.asg	Cla_Njc_Evam_Run, _Cla_Njc_Evam_Run
-		.asg	Cla_Njc_Pulse_Run, _Cla_Njc_Pulse_Run
-		.asg	Cla_Njc_Control_Run, _Cla_Njc_Control_Run
+		.asg	Cla_Avg_Run, _Cla_Avg_Run
+		.asg	Cla_Pulse_Run, _Cla_Pulse_Run
+		.asg	Cla_PCMC_Control_Run, _Cla_PCMC_Control_Run
+		.asg	Cla_PS_Control_Run, _Cla_PS_Control_Run
 		.endif
 
-		.global _Cla_Njc_Evam_Run
-		.global _Cla_Njc_Control_Run
-		.global _Cla_Njc_Pulse_Run
-   		.def	__cla_Cla_Njc_Fun_sp
+		.global _Cla_Avg_Run
+		.global _Cla_PCMC_Control_Run
+		.global _Cla_PS_Control_Run
+		.global _Cla_Pulse_Run
+   		.def	__cla_Cla_Fun_sp
 
 SIZEOF_LFRAME		.set	2
 LFRAME_MR3			.set	0
 
 		.align 	2
-__cla_Cla_Njc_Fun_sp	.usect ".scratchpad:Cla1Prog:_DCL_Cla_Njc_Fun_LSECT", SIZEOF_LFRAME, 0, 1
-		.asg	 __cla_Cla_Njc_Fun_sp, LFRAME
-		.sect 	"Cla1Prog:_Cla_Njc_Fun_LSECT"
-
+__cla_Cla_Fun_sp	.usect ".scratchpad:Cla1Prog:_DCL_Cla_Fun_LSECT", SIZEOF_LFRAME, 0, 1
+		.asg	 __cla_Cla_Fun_sp, LFRAME
+		.sect 	"Cla1Prog:_Cla_Fun_LSECT"
+;Avearge Function
 _Cla_Avg_Run:
 
 		MSETFLG 	RNDF32=1
@@ -74,6 +76,7 @@ Skip1:
 		MMOV32		MR3, @LFRAME + LFRAME_MR3
 		;.unasg      LFRAME
 
+;Peak Current Control Function (Not used)
 _Cla_PCMC_Control_Run:
 		MSETFLG 	RNDF32=1
 		MMOV32		@LFRAME + LFRAME_MR3, MR3
@@ -112,7 +115,7 @@ _Cla_PCMC_Control_Run:
 
 ;		.unasg      LFRAME
 
-
+;Phase Shift Control Function (Currently used)
 _Cla_PS_Control_Run:
 		MSETFLG 	RNDF32=1
 		MMOV32		@LFRAME + LFRAME_MR3, MR3
@@ -162,7 +165,8 @@ _Cla_PS_Control_Run:
 
 ;		.unasg      LFRAME
 
-_Cla_Njc_Pulse_Run:
+;Pulse Generator (Not used)
+_Cla_Pulse_Run:
 		MSETFLG 	RNDF32=1
 		MMOV32		@LFRAME + LFRAME_MR3, MR3
 		MNOP
