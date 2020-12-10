@@ -158,7 +158,7 @@ void backgroundfb4(void)
 void backgroundfc1(void)
 {
     //PI update function
-    PI_Update(PCP_P_handle);
+//    PI_Update(PCP_P_handle);
     //Reference current update function
     Iref_Update(PCP_P_handle);
     //Pulse Parameters(Duty/Frequency/)
@@ -167,6 +167,10 @@ void backgroundfc1(void)
     Soft_Prt_Update(PCP_P_handle);
     //Software protection threshold update(T)
     Soft_LSpd_Prt_Update(PCP_P_handle);
+
+    EPwm2Regs.TBPHS.bit.TBPHS = (Uint16)(iref/40.0*256*(McuClk/Fs/1000)) >> 8;
+    EPwm2Regs.TBPHS.bit.TBPHSHR =  (Uint16)((0xFF - ((Uint16)(iref/40.0*256*(McuClk/Fs/1000)) >> 8)) << 8);
+
 }
 
 //400ms background function 2
