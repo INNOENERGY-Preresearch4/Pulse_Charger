@@ -1,5 +1,6 @@
 		.cdecls   C,LIST,"Cla_Interrupts.h"
 		.cdecls   C,LIST,"CLAShared.h"
+		.cdecls   C,LIST,"user_def.h"
 
 		.if __TI_EABI__
 		.asg	Cla_Avg_Run, _Cla_Avg_Run
@@ -48,7 +49,7 @@ _Cla_Avg_Run:
 		MNOP
 		MNOP
 		MMOVI32     MR3,#0x1
-		MMOV16      @0x7404,MR3 ;ADC Interrupt Flag Clear Register
+		MMOV16      @0x7404,MR3 ;ADC Interrupt Flag Clear Register, Enabling Further Interrupts
 		MRCNDD		UNC
 		MNOP
 		MNOP
@@ -67,7 +68,7 @@ Skip1:
 		MADDF32     MR1,MR1,MR0 ; MR1 =  mult * (ADCResult*42.9268 - out) +  out*mult2
 		MMOVI32     MR3,#0x1
 		MMOV32      *MAR0,MR1	; out =  mult * (ADCResult*42.9268 - out) +  out*mult2
-		MMOV16      @0x7404,MR3
+		MMOV16      @0x7404,MR3 ;ADC Interrupt Flag Clear Register, Enabling Further Interrupts
 
 		MRCNDD		UNC
 		MNOP
@@ -84,10 +85,10 @@ _Cla_PCMC_Control_Run:
 
 		MMOV32      MR1,*MAR0
 		MMOV32      @_io,MR1
-		MMPYF32     MR1,MR1,#0.00045777
-		MSUBF32     MR0,MR0,MR1   ;K0 = (Iref-Io)*0.00045777
+		MMPYF32     MR1,MR1,#0.00045777;I_scaling_Ctr/RX_SC_General calibration = 30/65535 = 0.00045777
+		MSUBF32     MR0,MR0,MR1   ;K0 = (Iref-Io*0.00045777)
 		MMOV32      MR1,*MAR1[2]++ ;before: MAR1 = b0, after: MAR1 = b1
-		MMPYF32     MR1,MR0,MR1   ;K1 = b0*(Iref-Io)*0.00045777
+		MMPYF32     MR1,MR0,MR1   ;K1 = b0*(Iref-Io*0.00045777)
 		MMOV32      MR2,*MAR1[4]++ ;before: MAR1 = b1, after: MAR1 = ek1
 		MMOV32      MR3,*MAR1
 		MMPYF32     MR2,MR2,MR3   ;K2 = b1*ek1
@@ -96,7 +97,7 @@ _Cla_PCMC_Control_Run:
 		MMOV32      MR2,*MAR1[4]++ ;before: MAR1 = a1, after: MAR1 = uk1
 		MMOV32      MR3,*MAR1[2]++ ;before: MAR1 = uk1, after: MAR1 = umax
 		MMPYF32     MR2,MR2,MR3   ;K4 = a1*uk1
-		MADDF32     MR1,MR1,MR2 ;K5 = K3 + K4 = b0*(Iref-Io)*0.00045777 + b1*ek1 + a1*uk1
+		MADDF32     MR1,MR1,MR2 ;K5 = K3 + K4 = b0*(Iref-Io*0.00045777) + b1*ek1 + a1*uk1
 		MMOV32      MR2,*MAR1[2]++ ;before: MAR1 = umax, after: MAR1 = umin
 		MMOV32      MR3,*MAR1[-4]++ ;before: MAR1 = umin, after: MAR1 = uk1
 		MMINF32     MR1,MR2 ; K6 = min(K5, umax)
@@ -123,7 +124,7 @@ _Cla_PS_Control_Run:
 
 		MMOV32      MR1,*MAR0
 		MMOV32      @_io,MR1
-		MMPYF32     MR1,MR1,#0.00045777
+		MMPYF32     MR1,MR1,#0.00045777;30/65535 calibration
 		MSUBF32     MR0,MR0,MR1   ;K0 = (Iref-Io*0.00045777)
 		MMOV32      MR1,*MAR1[2]++ ;before: MAR1 = b0, after: MAR1 = b1
 		MMPYF32     MR1,MR0,MR1   ;K1 = b0*(Iref-Io*0.00045777)

@@ -97,7 +97,7 @@ void main(void)
     CMPSS_CFG(PCP_P_handle,CMPSSPORT,CMPSSGROUP,CMPSSSOURCE,CMPSSFWIN,CMPSSFVOTE,CMPSSPVALUE,sizeof(CMPSSPORT)/sizeof(CMPSSPORT[0]));
     PWM_DAC_CFG(PCP_P_handle,ePWM7,ePWM8,HwPrtThrdVo,HwPrtThrdIo,HwPrtThrdIin,HwPrtThrdVin);
     PWM_DRV_CFG(PCP_P_handle,PWM_PSFB_VCM,ePWM1,ePWM2,ePWM3,ePWM1SOCA,Fs,DdTime,BlankWin);
-    PULSE_GEN_CFG(PCP_P_handle,ClkDiv4,HSPClkDiv4,PulseFreq_Init,PulseDuty_Init,PI_Update_Time,ePWM4);
+    PULSE_GEN_CFG(PCP_P_handle,ClkDiv16,HSPClkDiv10,PulseFreq_Init,PulseDuty_Init,PI_Update_Time,ePWM4);
     ADC_DRV_CFG(PCP_P_handle,ADCPORT,ADCSOC,ADCSOURCE,ADCACQPS,ADCTRIG,sizeof(ADCPORT)/sizeof(ADCPORT[0]));
     CLA_DRV_CFG(PCP_P_handle,CLATASK,CLASOURCE,CLAIACK,sizeof(CLATASK)/sizeof(CLATASK[0]));
     CMPSS_PCMC_CFG(PCP_P_handle,CMPSS7,CMPSS_MUX_PGA_OF,ePWM3,FilterWin,FilterVote,RampRef_Init,RampDec);

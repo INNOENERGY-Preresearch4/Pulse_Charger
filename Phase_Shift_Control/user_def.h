@@ -231,7 +231,7 @@
 #define LspClk              25000000//LSPCLK uses a /4 divider by default (100M/4 = 25MHz)
 #define BaudRate            57600
 //
-#define PulseFreqMin        0.01f   //*10kHz
+#define PulseFreqMin        0.001f   //1Hz
 
 #define T_Launch_Prt        5
 #define T_Launch            30
@@ -242,4 +242,23 @@
 #define Startup_Wait_time2    10
 #define Shutdown_Wait_time1    0
 #define Shutdown_Wait_time2    3
+
+#define Kp_Scaling 0.01f
+#define Ki_Scaling 10.0f
+#define Iref_Scaling 50.0f
+#define PulseFreq_Scaling 10000.0f
+#define PulseDuty_Max 1.0f
+
+#define In_Relay_Thrd 40.0f
+
+#define V_scaling 85.0f
+#define I_scaling 41.0f
+#define I_scaling_Ctr 30.0f
+#define Tmt_scaling 60.0f
+
+#define RX_SC_Freq 50000.0f
+#define RX_SC_General 65535.0f
+
+#define ADC_Cnt_Max 4096.0f
+
 #endif

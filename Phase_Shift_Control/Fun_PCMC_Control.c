@@ -6,7 +6,7 @@
 
 
 void (*PWM_GPIO_CFG3[])(void) = {InitEpwm1Gpio,InitEpwm2Gpio,InitEpwm3Gpio,InitEpwm4Gpio,InitEpwm5Gpio,InitEpwm6Gpio,InitEpwm7Gpio,InitEpwm8Gpio};
-
+//Peak Current Control (not used)
 void PWM_PSFB_PCMC_FUN(PCP_Driver_OBJ_p OBJ)
 {
     PCP_Driver_OBJ* target = (PCP_Driver_OBJ*)OBJ;

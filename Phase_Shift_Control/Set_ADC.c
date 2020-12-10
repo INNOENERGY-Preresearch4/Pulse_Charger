@@ -30,6 +30,7 @@ void ADC_DRV_SET(PCP_Driver_OBJ_p OBJ)
         ADC_DRV_PTR->ADCINTFLGCLR.bit.ADCINT1 = 1;//ADC Interrupt  flg clr
         //ADCSOCxCTL: 8-0 SOCx Acquisition Prescale, 18-15 SOCx Channel Select, 24-20 SOCx Trigger Source Select
         ADC_SOC_PTR = (target->ADC_DRV_OBJ_P_INS->acqps[num] + (target->ADC_DRV_OBJ_P_INS->source[num] <<15) + ((target->ADC_DRV_OBJ_P_INS->trig[num]) <<20));
+        //ADC Interrupt Clear
         ADC_DRV_PTR->ADCINTFLGCLR.bit.ADCINT1 = 1;
     }
     Device_cal();

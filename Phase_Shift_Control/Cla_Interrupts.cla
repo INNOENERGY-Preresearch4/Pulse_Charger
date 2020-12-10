@@ -51,10 +51,10 @@ __attribute__((interrupt)) void claTask2(void)
     io    = EVAG_N1.out;
 
     //Discretized PI controller
-    PartP = Kp*(iref-io*0.0004577f) - Kp*(iref_last-io_last*0.0004577f);
-    PartI = Ki*Tpulse/2.0*(iref-io*0.0004577f) + Ki*Tpulse/2.0*(iref_last-io_last*0.0004577f);
+    PartP = Kp*(iref-io*I_scaling_Ctr/RX_SC_General) - Kp*(iref_last-io_last*I_scaling_Ctr/RX_SC_General);
+    PartI = Ki*Tpulse/2.0*(iref-io*I_scaling_Ctr/RX_SC_General) + Ki*Tpulse/2.0*(iref_last-io_last*I_scaling_Ctr/RX_SC_General);
     phase_shift_raw = PartP + PartI + phase_shift_last;
-    //Without Anti-windup currently
+    //Without Anti-Windup currently
     //Saturation
     if (phase_shift_raw < CnlVar_N1.umin)
     {
@@ -73,7 +73,7 @@ __attribute__((interrupt)) void claTask2(void)
 
     EPwm2Regs.TBPHS.bit.TBPHS = phase_shift_int >> 8;
     EPwm2Regs.TBPHS.bit.TBPHSHR =  (Uint16)((0xFF - ((Uint16)phase_shift_int >> 8)) << 8);
-    //Interupt clr.
+    //Interupt clr, enable further interrupts
     EPwm4Regs.ETCLR.bit.INT = 1;
     //save variables
     phase_shift_last = phase_shift;

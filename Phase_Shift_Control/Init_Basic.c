@@ -4,6 +4,7 @@
 #include "background.h"
 #include "Cla_Interrupts.h"
 
+//Initialize Arrays and Array Pointers
 PCP_Driver_OBJ_p PCP_INIT(void *PCP_OBJ,Uint16 Memsize)
 {
     if(Memsize < sizeof(PCP_Driver_OBJ))

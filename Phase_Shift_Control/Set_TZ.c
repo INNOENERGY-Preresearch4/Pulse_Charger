@@ -4,6 +4,7 @@
 #include "background.h"
 #include "Cla_Interrupts.h"
 
+//Software Protection Setting (through Xbar and Trip Zone)
 void IO_PROTECT_SET(PCP_Driver_OBJ_p OBJ)
 {
     PCP_Driver_OBJ* target = (PCP_Driver_OBJ*)OBJ;
@@ -11,16 +12,12 @@ void IO_PROTECT_SET(PCP_Driver_OBJ_p OBJ)
 
     InputXbarRegs.INPUT2SELECT = (target->IO_PACK_OBJ_P_INS->FLT1_p->portname);//Bridge1 OC
     InputXbarRegs.INPUT3SELECT = (target->IO_PACK_OBJ_P_INS->FLT2_p->portname);//Bridge2 OC
-    EPwmXbarRegs.TRIP7MUX0TO15CFG.bit.MUX0 = 1;//Output OC & OV
-    EPwmXbarRegs.TRIP8MUX0TO15CFG.bit.MUX2 = 0;//Input OC
+    EPwmXbarRegs.TRIP7MUX0TO15CFG.bit.MUX0 = 1;//Output OC & OV :CMPSS1.CTRIPH_OR_CTRIPL
+    EPwmXbarRegs.TRIP8MUX0TO15CFG.bit.MUX2 = 0;//Input OC :CMPSS2.CTRIPH
     XbarRegs.XBARCLR1.all      = 0xffffffff;
     XbarRegs.XBARCLR2.all      = 0xffffffff;
-    EPwmXbarRegs.TRIP7MUXENABLE.bit.MUX0 = 1;
-    EPwmXbarRegs.TRIP8MUXENABLE.bit.MUX2 = 1;
-
-//    (*(volatile Uint32*)(0x7A00+0x4)) = 0x444440;
-//    (*(volatile Uint32*)(0x7A00+0x6)) = 0x40444;
-//    (*(volatile Uint32*)(0x7A00+0x22))= 0x22A0AAB;
+    EPwmXbarRegs.TRIP7MUXENABLE.bit.MUX0 = 1;//Enable Mux0 to drive Trip Input 7
+    EPwmXbarRegs.TRIP8MUXENABLE.bit.MUX2 = 1;//Enable Mux2 to drive Trip Input 8
 
     //Trip Input 2,3,7,8 Selected as Combined Input (2:GateDriver1, 3:GateDriver2, 7:Output OC & OV, 8:Input OC)
     //EPWM1

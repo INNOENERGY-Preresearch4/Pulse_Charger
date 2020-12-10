@@ -4,6 +4,7 @@
 #include "background.h"
 #include "Cla_Interrupts.h"
 
+//Array Pointer Configuration and EPWM IO Initialization
 void PWM_DAC_CFG(PCP_Driver_OBJ_p OBJ,Uint16 port1,Uint16 port2,float32 out1,float32 out2,float32 out3,float32 out4)
 {
     PCP_Driver_OBJ *target = (PCP_Driver_OBJ *)OBJ;

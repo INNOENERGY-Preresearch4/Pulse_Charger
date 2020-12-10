@@ -62,11 +62,11 @@ void backgroundfc(void)
 //4ms background function 1
 //Calibrate Sample Value of Vin
 //If Vin > 40V, Enable Input Relay
-//Disable Input and Output Relay If any of Protections were triggered.
+//disable input and output relay if any of protections were triggered.
 void backgroundfa1(void)
 {
-    Vin = AdcbResultRegs.ADCRESULT4*85.0/4096;
-    if(Vin >= 40.0)
+    Vin = AdcbResultRegs.ADCRESULT4*V_scaling/ADC_Cnt_Max;
+    if(Vin >= In_Relay_Thrd)
     {
         PCP_P_handle->IO_PACK_OBJ_P_INS->Relay_in_p->portdata = 1;
     }
@@ -81,20 +81,18 @@ void backgroundfa1(void)
 }
 
 //4ms background function 2
-//Calibrate Sample Value of Temperature, Vin, Vo
-//Save Calibrated Values Temperature, Vin, Vo and Io and Then Do Filtering for Display
-//emavgx.multiplier isn't assigned (=0) currently, therefore no filtering.
+//Calibrate Sample Value of Temperature, Vin, Vo (Io in Cla_Fun.asm : Cla_Avg_Run)
 //Save Protection Flags for Display
 void backgroundfa2(void)
 {
     temp_emavg = AdcbResultRegs.ADCRESULT3*0.03533+7.193;
     EMAVG_run(&emavgTemp, temp_emavg);
     PCP_P_handle->PCP_DATAEXCHANGE_OBJ_P_INS->T_dis_data = emavgTemp.out;
-    vin_emavg  = AdcbResultRegs.ADCRESULT4*17.031998;
+    vin_emavg  = AdcbResultRegs.ADCRESULT4*RX_SC_General/ADC_Cnt_Max;
     EMAVG_run(&emavgVin, vin_emavg);
     PCP_P_handle->PCP_DATAEXCHANGE_OBJ_P_INS->Vin_dis_data = (Uint16)emavgVin.out;
 //    vo_emavg = AdcaResultRegs.ADCRESULT2*17.031998*;
-    vo_emavg = AdcaResultRegs.ADCRESULT2*17.031998;
+    vo_emavg = AdcaResultRegs.ADCRESULT2*RX_SC_General/ADC_Cnt_Max;
     EMAVG_run(&emavgVo, vo_emavg);
     PCP_P_handle->PCP_DATAEXCHANGE_OBJ_P_INS->Vo_dis_data = (Uint16)emavgVo.out;
     PCP_P_handle->PCP_DATAEXCHANGE_OBJ_P_INS->Io_dis_data = (Uint16)io;
@@ -126,6 +124,7 @@ void backgroundfb1(void)
 {
     //Transmit Saved Values and Flags for Display
     SCI_HANDLE_FUN(PCP_P_handle);
+    //State Machine to identify Operating Mode
     SM_FUN(PCP_P_handle);
 }
 
@@ -133,9 +132,6 @@ void backgroundfb1(void)
 //Update PWM duty for Hardware Protection
 void backgroundfb2(void)
 {
-//    ((volatile struct EPWM_REGS *)PCP_P_handle->PWM_DAC_OBJ_P_INS->address1)->CMPA.bit.CMPA= (Uint16)((PCP_P_handle->PCP_DATAEXCHANGE_OBJ_P_INS->Iin_Prt_data * 0.000014758526-0.007576) * 10000);
-//    ((volatile struct EPWM_REGS *)PCP_P_handle->PWM_DAC_OBJ_P_INS->address1)->CMPB.bit.CMPB= (Uint16)((PCP_P_handle->PCP_DATAEXCHANGE_OBJ_P_INS->Vo_Prt_data  * 0.00001177766-0.003788) * 10000);
-//    ((volatile struct EPWM_REGS *)PCP_P_handle->PWM_DAC_OBJ_P_INS->address2)->CMPB.bit.CMPB= (Uint16)((PCP_P_handle->PCP_DATAEXCHANGE_OBJ_P_INS->Io_Prt_data  * 0.00001484036-0.007576) * 10000);
 }
 
 //40ms background function 3
@@ -147,12 +143,11 @@ void backgroundfb3(void)
 
 void backgroundfb4(void)
 {
-    //NotifyLight
-    if (BeatCount >= (10 + 2 - PCP_P_handle->PCP_DATAEXCHANGE_OBJ_P_INS->T_dis_data/10))
+    //NotifyLight, speed up with increasing temperature
+    if (BeatCount >= (12 - PCP_P_handle->PCP_DATAEXCHANGE_OBJ_P_INS->T_dis_data/10))
     {
         BeatCount = 0;
         PCP_P_handle->IO_PACK_OBJ_P_INS->Twinkle_p->portdata   = (1 - PCP_P_handle->IO_PACK_OBJ_P_INS->Twinkle_p->portdata);
-    //        PCP_P_handle->IO_PACK_OBJ_P_INS->OOUT2_p->portdata   = (1 - PCP_P_handle->IO_PACK_OBJ_P_INS->OOUT2_p->portdata);
     }
     else
     {

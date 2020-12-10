@@ -4,6 +4,10 @@
 #include "background.h"
 #include "Cla_Interrupts.h"
 
+//Run in Background
+//save port data if port direction is IN(0)
+//write port data if port direction is OUT(1)
+//any GPIO change must also be applied in "Cfg_Basic.c" and other related files
 void IO_HANDLE_FUN(PCP_Driver_OBJ_p OBJ)
 {
 

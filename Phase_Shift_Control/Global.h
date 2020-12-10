@@ -307,18 +307,21 @@ Sci_Drv_Obj_p SCI_DRV_INIT(void *OBJ,Uint16 Memsize);
 PCP_DataExchange_Obj_p PCP_DATA_EX_INIT(void *OBJ,Uint16 Memsize);
 PCP_PulseGen_Obj_p PULSE_DRV_INIT(void *OBJ,Uint16 Memsize);
 
+//Identify If SCI Transmitter is Ready to Transmit
 inline bool Sci_tx_is_busy(PCP_Driver_OBJ_p OBJ)
 {
     PCP_Driver_OBJ* target = (PCP_Driver_OBJ*)OBJ;
     return (SCI_DRV_PTR->SCICTL2.bit.TXRDY == 0);
 }
 
+//Identify If SCI Receiver is Ready to be Read.
 inline bool Sci_rx_is_ready(PCP_Driver_OBJ_p OBJ)
 {
     PCP_Driver_OBJ* target = (PCP_Driver_OBJ*)OBJ;
     return (SCI_DRV_PTR->SCIFFRX.bit.RXFFST != 0);
 }
 
+//So far Receiver Buffer is ready to be read, read characters cyclically and store them in rxbuf[n](8 digits).
 inline bool Sci_in_char(PCP_Driver_OBJ_p OBJ)
 {
     PCP_Driver_OBJ* target = (PCP_Driver_OBJ*)OBJ;
@@ -336,6 +339,7 @@ inline bool Sci_in_char(PCP_Driver_OBJ_p OBJ)
     return flag;
 }
 
+//So far Transmitter Buffer is ready to transmit, store characters into the buffer.
 inline void Sci_out_char(PCP_Driver_OBJ_p OBJ)
 {
     PCP_Driver_OBJ* target = (PCP_Driver_OBJ*)OBJ;
