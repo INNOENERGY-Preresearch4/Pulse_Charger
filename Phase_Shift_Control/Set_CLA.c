@@ -53,7 +53,8 @@ void CLA_DRV_SET(PCP_Driver_OBJ_p OBJ)
     //Enable CLA Interrupts and SW Force Interrupts
     for(num=0;num<target->CLA_DRV_OBJ_P_INS->length;num++)
     {
-//        if(target->CLA_DRV_OBJ_P_INS->task[num] != 2)
+    //Avoid CLA Task2 (Triggered in Pulse Frequency) operate too early and cause PI saturation
+        if(target->CLA_DRV_OBJ_P_INS->task[num] != 2)
         Cla1Regs.MIER.all |= 1<<(target->CLA_DRV_OBJ_P_INS->task[num]-1);
         Cla1Regs.MIFRC.all |= target->CLA_DRV_OBJ_P_INS->iack[num] <<(target->CLA_DRV_OBJ_P_INS->task[num]-1);
     }
