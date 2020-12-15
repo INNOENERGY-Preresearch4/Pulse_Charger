@@ -51,6 +51,8 @@ __attribute__((interrupt)) void claTask2(void)
 {
     //PI Tustin Discretization: y = (Kp + Ki/s)*u = (Kp + Ki*T/2*(1+Z^-1)/(1-Z^-1))*u
     io    = EVAG_N1.out;
+    Cmpss7Regs.RAMPMAXREFS =  (Uint16)(RX_SC_General/I_pcmc_max*iref); //3.3V = 36.6A (output Current)
+    Cmpss7Regs.RAMPDECVALS =  (Uint16)(65535/500.0*0.1);
 /*
     //Discretized PI controller
     PartP = Kp*(iref-io*I_scaling_Ctr/RX_SC_General) - Kp*(iref_last-io_last*I_scaling_Ctr/RX_SC_General);

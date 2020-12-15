@@ -24,7 +24,7 @@ void PCP_Driver_Configure(PCP_Driver_OBJ_p OBJ)
     //Set SW Protection Thrd (via CMPSS)
     CMPSS_SET(target);
     //Set Peak Current Control
-//    CMPSS_PCMC_SET(target);
+    CMPSS_PCMC_SET(target);
     //Set EPWM TZ for SW Protection
     IO_PROTECT_SET(target);
     //Set CLA

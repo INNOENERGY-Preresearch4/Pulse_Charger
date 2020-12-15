@@ -28,8 +28,8 @@ void CMPSS_PCMC_SET(PCP_Driver_OBJ_p OBJ)
             CMPSS_PCMC_PTR->COMPDACCTL.bit.RAMPSOURCE= target->CMPSS_PCMC_OBJ_P_INS->rampsource;//syn on EPWM3
             CMPSS_PCMC_PTR->COMPDACCTL.bit.DACSOURCE = 1;//use RAMPGEN
             CMPSS_PCMC_PTR->COMPDACCTL.bit.SWLOADSEL = 1;
-            CMPSS_PCMC_PTR->RAMPMAXREFS              = (Uint16)(65520*target->CMPSS_PCMC_OBJ_P_INS->Itrip);
-            CMPSS_PCMC_PTR->RAMPDECVALS              = (Uint16)(65520/500.0*target->CMPSS_PCMC_OBJ_P_INS->Icompramp);
+            CMPSS_PCMC_PTR->RAMPMAXREFS              = (Uint16)(65535*target->CMPSS_PCMC_OBJ_P_INS->Itrip);
+            CMPSS_PCMC_PTR->RAMPDECVALS              = (Uint16)(65535/500.0*target->CMPSS_PCMC_OBJ_P_INS->Icompramp);//500 = 100MHz/200kHz??(400kHz)
 
             CMPSS_PCMC_PTR->COMPDACCTL.bit.BLANKEN   = 1;
             CMPSS_PCMC_PTR->COMPDACCTL.bit.BLANKSOURCE=target->PWM_DRV_OBJ_P_INS->port2;

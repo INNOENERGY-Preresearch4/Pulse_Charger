@@ -168,9 +168,6 @@ void backgroundfc1(void)
     //Software protection threshold update(T)
     Soft_LSpd_Prt_Update(PCP_P_handle);
 
-    EPwm2Regs.TBPHS.bit.TBPHS = (Uint16)(iref/40.0*256*(McuClk/Fs/1000)) >> 8;
-    EPwm2Regs.TBPHS.bit.TBPHSHR =  (Uint16)((0xFF - ((Uint16)(iref/40.0*256*(McuClk/Fs/1000)) >> 8)) << 8);
-
 }
 
 //400ms background function 2

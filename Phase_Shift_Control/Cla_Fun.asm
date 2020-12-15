@@ -105,9 +105,9 @@ _Cla_PCMC_Control_Run:
 		MMOV32      *MAR1,MR1 ;uk1 = K7
 		MMPYF32     MR1,MR1,#65520.0
 		MF32TOUI16  MR2,MR1
-		MMOV32      @0x5D4A,MR2
+		MMOV32      @0x5D4A,MR2 ;Ramp Shadow Resgister
 		MMOVI32     MR3,#0x1
-		MMOV32      @0x43AA,MR3
+		MMOV32      @0x43AA,MR3 ;EPWM4 Event Trigger Clear Register
 		MRCNDD		UNC
 		MNOP
 		MNOP

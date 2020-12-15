@@ -261,4 +261,6 @@
 
 #define ADC_Cnt_Max 4096.0f
 
+#define I_pcmc_max 36.66f
+
 #endif
