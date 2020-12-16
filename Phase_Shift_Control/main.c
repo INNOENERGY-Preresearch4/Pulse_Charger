@@ -32,13 +32,13 @@ Uint16 CLAIACK[]={Null,Null,Force};//One-shot Software Triggering
 //Initialize Comparators and Reference Voltages for Protection
 //bypass PGA via manual switches on ControlCard (Reference: "controlCARD Information Guide")
 //Pg.1454 Source Table
-//A2(PGA1_IN/Output Voltage), A3(ADCA1/Output Current), A5(ADCA2/Input Current)
+//A2(PGA1_IN/Output Current),A3(ADCA1/Output Voltage),, A5(ADCA2/Input Current)
 Uint16 CMPSSPORT[]={CMPSS1,CMPSS1,CMPSS2};
 Uint16 CMPSSGROUP[]={CMPSSL,CMPSSH,CMPSSH};//
 Uint16 CMPSSSOURCE[]={CMPSS_MUX_PGA_OF,CMPSS_MUX_ADCAB,CMPSS_MUX_ADCAB};
 Uint16 CMPSSFWIN[]={WinWidth,WinWidth,WinWidth};
 Uint16 CMPSSFVOTE[]={VoteNum,VoteNum,VoteNum};
-Uint16 CMPSSPVALUE[]={VoPrtThrdInit,IoPrtThrdInit,IinPrtThrdInit};
+Uint16 CMPSSPVALUE[]={IoPrtThrdInit,VoPrtThrdInit,IinPrtThrdInit};
 
 //Initialize CLA DataRAM
 //Cla to CPU Message, real output current
