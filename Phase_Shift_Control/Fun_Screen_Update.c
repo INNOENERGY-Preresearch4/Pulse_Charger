@@ -118,14 +118,15 @@ void Soft_Prt_Update(PCP_Driver_OBJ_p OBJ)
     PCP_Driver_OBJ* target = (PCP_Driver_OBJ*)OBJ;
     Uint16 num;
 
-    if ((target->PCP_DATAEXCHANGE_OBJ_P_INS->Vo_Prt_data >= 1.0f/Tmt_scaling*RX_SC_General) && (target->PCP_DATAEXCHANGE_OBJ_P_INS->Vo_Prt_data <= RX_SC_General))
-    {
-    target->CMPSS_OBJ_P_INS->protect_value[0] = (Uint16)(target->PCP_DATAEXCHANGE_OBJ_P_INS->Vo_Prt_data*65.45f*Tmt_scaling/RX_SC_General);
-    }
 
     if ((target->PCP_DATAEXCHANGE_OBJ_P_INS->Io_Prt_data >= 1.0f/Tmt_scaling*RX_SC_General) && (target->PCP_DATAEXCHANGE_OBJ_P_INS->Io_Prt_data <= RX_SC_General))
     {
-    target->CMPSS_OBJ_P_INS->protect_value[1] = (Uint16)(target->PCP_DATAEXCHANGE_OBJ_P_INS->Io_Prt_data*105.90f*Tmt_scaling/RX_SC_General);
+    target->CMPSS_OBJ_P_INS->protect_value[0] = (Uint16)(target->PCP_DATAEXCHANGE_OBJ_P_INS->Io_Prt_data*105.90f*Tmt_scaling/RX_SC_General);
+    }
+
+    if ((target->PCP_DATAEXCHANGE_OBJ_P_INS->Vo_Prt_data >= 1.0f/Tmt_scaling*RX_SC_General) && (target->PCP_DATAEXCHANGE_OBJ_P_INS->Vo_Prt_data <= RX_SC_General))
+    {
+    target->CMPSS_OBJ_P_INS->protect_value[1] = (Uint16)(target->PCP_DATAEXCHANGE_OBJ_P_INS->Vo_Prt_data*65.45f*Tmt_scaling/RX_SC_General);
     }
 
     if ((target->PCP_DATAEXCHANGE_OBJ_P_INS->Iin_Prt_data >= 1.0f/Tmt_scaling*RX_SC_General) && (target->PCP_DATAEXCHANGE_OBJ_P_INS->Iin_Prt_data <= RX_SC_General))
